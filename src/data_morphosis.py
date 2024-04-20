@@ -67,7 +67,7 @@ class DataMorphosis:
             .reverse()
             .rolling_std(window)
             .reverse()
-            .alias("forward_rolling_std")
+            .alias("Forward_Volatility")
         )
 
         return df_sub
@@ -88,6 +88,13 @@ class DataMorphosis:
             df_combined_new = df_combined_new.with_columns(
                 pl.col("Response").shift(i).alias(f"Response_lag_{i}")
             )
+        df_combined_new = df_combined_new.with_columns(
+            Sum_of_lagged_response=pl.col("Response_lag_1")
+            + pl.col("Response_lag_2")
+            + pl.col("Response_lag_3")
+            + pl.col("Response_lag_4")
+            + pl.col("Response_lag_5")
+        )
         return df_combined_new
 
     def create_additional_features(self, df_combined: pl.DataFrame) -> pl.DataFrame:
