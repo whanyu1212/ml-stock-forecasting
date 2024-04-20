@@ -24,6 +24,9 @@ scikit-learn = "^1.4.2"
 matplotlib = "^3.8.4"
 seaborn = "^0.13.2"
 loguru = "^0.7.2"
+lightgbm = "^4.3.0"
+tensorflow = "^2.16.1"
+keras = "^3.2.1"
 
 
 [build-system]
