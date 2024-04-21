@@ -36,3 +36,4 @@ repos:
           - "python"
         args:
           - "--max-line-length=89"
+          - "--ignore=E203"
