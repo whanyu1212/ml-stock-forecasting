@@ -22,12 +22,14 @@ class LGBMClassifierPipeline:
     RESPONSE = "Response"
 
     def __init__(self, df: pl.DataFrame):
-        self.df = df.drop_nulls()
+        self.df = df.drop_nulls().with_columns(
+            pl.col("Date").str.to_datetime().dt.date()
+        )
         self.model = LGBMClassifier()
 
     def train_validation_split(self, df: pl.DataFrame):
-        train = df.filter(pl.col("Date") < "2022-08-01")
-        val = df.filter(pl.col("Date") >= "2022-08-01")
+        train = df.filter(pl.col("Date") < pl.date(2022, 8, 1))
+        val = df.filter(pl.col("Date") >= pl.date(2022, 8, 1))
         return train, val
 
     def select_predictors_response(self, train, val):
@@ -57,7 +59,7 @@ class LGBMClassifierPipeline:
 
 if __name__ == "__main__":
     df = pl.read_csv(
-        "/Users/hanyuwu/Study/stock-forecasting/data/intermediate/stock_combined.csv"
+        "/Users/hanyuwu/Study/stock-forecasting/data/processed/stock_combined.csv"
     )
     pipeline = LGBMClassifierPipeline(df)
     pipeline.run()

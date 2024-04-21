@@ -187,8 +187,8 @@ class RobertaPipeline:
 
 # Example usage
 
-# if __name__ == "__main__":
-#     df = pl.read_csv("./data/raw/stock_tweets.csv")
-#     rb_pipeline = RobertaPipeline(df)
-#     df_processed = rb_pipeline.run()
-#     df_processed.write_csv("./data/intermediate/stock_tweets_with_sentiment.csv")
+if __name__ == "__main__":
+    df = pl.read_csv("./data/raw/stock_tweets.csv")
+    rb_pipeline = RobertaPipeline(df)
+    df_processed = rb_pipeline.run()
+    df_processed.write_csv("./data/intermediate/stock_tweets_with_sentiment.csv")

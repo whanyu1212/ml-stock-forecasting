@@ -36,12 +36,14 @@ class LSTMClassifierPipeline:
         Args:
             df (pl.DataFrame): input dataframe
         """
-        self.df = df.drop_nulls()
+        self.df = df.drop_nulls().with_columns(
+            pl.col("Date").str.to_datetime().dt.date()
+        )
         self.scaler = MinMaxScaler()
 
-    def train_val_split(self, df: pl.DataFrame):
-        train = df.filter(pl.col("Date") < "2022-08-01")
-        val = df.filter(pl.col("Date") >= "2022-08-01")
+    def train_validation_split(self, df: pl.DataFrame):
+        train = df.filter(pl.col("Date") < pl.date(2022, 8, 1))
+        val = df.filter(pl.col("Date") >= pl.date(2022, 8, 1))
         return train, val
 
     def preprocess_data(
@@ -230,7 +232,7 @@ class LSTMClassifierPipeline:
     def run(self):
         """Run the flow."""
         df = self.df.clone()
-        train, val = self.train_val_split(df)
+        train, val = self.train_validation_split(df)
         train, val = self.preprocess_train_val(train, val)
         X_train_scaled, y1_train, y2_train = self.generate_feature_response(train)
         X_val_scaled, y1_val, y2_val = self.generate_feature_response(val)
@@ -247,7 +249,7 @@ class LSTMClassifierPipeline:
         )
 
 
-# if __name__ == "__main__":
-#     df = pl.read_csv("data/intermediate/stock_combined.csv")
-#     pipeline = LSTMClassifierPipeline(df)
-#     pipeline.run()
+if __name__ == "__main__":
+    df = pl.read_csv("./data/processed/stock_combined.csv")
+    pipeline = LSTMClassifierPipeline(df)
+    pipeline.run()

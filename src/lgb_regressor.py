@@ -22,14 +22,16 @@ class LGBMRegressorPipeline:
     RESPONSE = "Forward_Volatility"
 
     def __init__(self, df: pl.DataFrame):
-        self.df = df.drop_nulls()
+        self.df = df.drop_nulls().with_columns(
+            pl.col("Date").str.to_datetime().dt.date()
+        )
         self.model = LGBMRegressor(
             n_estimators=1000, learning_rate=0.01, random_state=42
         )
 
     def train_validation_split(self, df: pl.DataFrame):
-        train = df.filter(pl.col("Date") < "2022-08-01")
-        val = df.filter(pl.col("Date") >= "2022-08-01")
+        train = df.filter(pl.col("Date") < pl.date(2022, 8, 1))
+        val = df.filter(pl.col("Date") >= pl.date(2022, 8, 1))
         return train, val
 
     def select_predictors_response(self, train, val):
@@ -62,8 +64,6 @@ class LGBMRegressorPipeline:
 
 
 if __name__ == "__main__":
-    df = pl.read_csv(
-        "/Users/hanyuwu/Study/stock-forecasting/data/intermediate/stock_combined.csv"
-    )
+    df = pl.read_csv("./data/processed/stock_combined.csv")
     pipeline = LGBMRegressorPipeline(df)
     pipeline.run()

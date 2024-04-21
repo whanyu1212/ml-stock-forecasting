@@ -139,10 +139,8 @@ class DataMorphosis:
 
 
 if __name__ == "__main__":
-    df_stock = pl.read_csv(
-        "/Users/hanyuwu/Study/stock-forecasting/data/raw/stock_yfinance_data.csv"
-    )
+    df_stock = pl.read_csv("./data/raw/stock_yfinance_data.csv")
     df_tweets = pl.read_csv("./data/intermediate/stock_tweets_with_sentiment.csv")
     processor = DataMorphosis(df_stock, df_tweets)
     df_combined = processor.run()
-    df_combined.write_csv("./data/intermediate/stock_combined.csv")
+    df_combined.write_csv("./data/processed/stock_combined.csv")
