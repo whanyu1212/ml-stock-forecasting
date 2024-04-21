@@ -31,26 +31,10 @@ class LGBMClassifierPipeline:
         return train, val
 
     def select_predictors_response(self, train, val):
-        predictors = [
-            "Backward_Volatility",
-            "Sentiment_lag_1",
-            "Sentiment_lag_2",
-            "Sentiment_lag_3",
-            "Sentiment_lag_4",
-            "Sentiment_lag_5",
-            "Response_lag_1",
-            "Response_lag_2",
-            "Response_lag_3",
-            "Response_lag_4",
-            "Response_lag_5",
-            "Sum_of_lagged_response",
-        ]
-        response = "Response"
-
-        X_train = train.select(predictors)
-        y_train = train.select(response)
-        X_val = val.select(predictors)
-        y_val = val.select(response)
+        X_train = train.select(self.PREDICTORS)
+        y_train = train.select(self.RESPONSE)
+        X_val = val.select(self.PREDICTORS)
+        y_val = val.select(self.RESPONSE)
 
         return X_train, y_train, X_val, y_val
 
@@ -71,9 +55,9 @@ class LGBMClassifierPipeline:
         print(f"Accuracy: {accuracy}")
 
 
-# if __name__ == "__main__":
-#     df = pl.read_csv(
-#         "/Users/hanyuwu/Study/stock-forecasting/data/intermediate/stock_combined.csv"
-#     )
-#     pipeline = LGBMClassifierPipeline(df)
-#     pipeline.run()
+if __name__ == "__main__":
+    df = pl.read_csv(
+        "/Users/hanyuwu/Study/stock-forecasting/data/intermediate/stock_combined.csv"
+    )
+    pipeline = LGBMClassifierPipeline(df)
+    pipeline.run()
